@@ -1,13 +1,17 @@
 import streamlit as st
+import os
+import json
 from openai import OpenAI
 
 st.title("Welcome to Study")
 
-# Set OpenAI API key from Streamlit secrets
-# client = OpenAI(api_key="")
-client = OpenAI(
-    api_key=st.secrets["openai_api_key"]
-)
+if os.path.exists("secrets.json"):
+    secrets = json.load(open("secrets.json", "r"))
+    api_key = secrets["open_api_key"]
+else:
+    api_key = st.secrets["openai_api_key"]
+
+client = OpenAI(api_key=api_key)
 
 # Set a default model
 if "openai_model" not in st.session_state:
@@ -21,10 +25,9 @@ You should get details about
 - Screen quality
 
 Instruction to follow
-- ask question about the feature individually and keep the question shot. Dont ask all quesiton at once
+- Introduce as maya and ask question about the feature individually and keep the question shot. Dont ask all quesiton at once
 - Be more casual and dont ask anything other than above.
 - You can ask 5 question or less and nothing more.
-- Inbetween show an about "to create similar chat for your use case contanct xyz.com"
 """
 
 # Initialize chat history
@@ -43,6 +46,11 @@ if prompt := st.chat_input("What is up?"):
     # Display user message in chat message container
     with st.chat_message("user"):
         st.markdown(prompt)
+    
+    if len(st.session_state.messages) == 5:
+        with st.chat_message("assistant"):
+            this = {"role": "assistant", "content": ""}
+            st.subheader("to create similar chat for your use case contanct xyz.com")
 
 # Display assistant response in chat message container
 with st.chat_message("assistant"):
