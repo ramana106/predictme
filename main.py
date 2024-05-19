@@ -4,7 +4,10 @@ from openai import OpenAI
 st.title("Welcome to Study")
 
 # Set OpenAI API key from Streamlit secrets
-client = OpenAI(api_key="sk-proj-rUyeHvcU9SG0jgNi0XCzT3BlbkFJ5XAOmODSrQH35qbBZ31y")
+# client = OpenAI(api_key="")
+client = OpenAI(
+    api_key=st.secrets["openai_api_key"]
+)
 
 # Set a default model
 if "openai_model" not in st.session_state:
